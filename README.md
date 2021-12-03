@@ -19,7 +19,7 @@ The installation is mostly handled by the setup script, but for the time being
 
 3. BeautifulSoup4 needs to be installed via:
 
-    `pip install beautifulsoup4`
+    `python3 -m pip install beautifulsoup4`
 
 2. Run the setup script:
 
