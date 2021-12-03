@@ -18,7 +18,7 @@ today = date.today()
 today_date = today.strftime("%m_%d_%Y")
 
 # Config path HAS BEEN populated by the setup script
-config_path = '/home/lame/projects/UC_Auto_Checkin/Final/UC-auto-checkin/config.json'
+config_path = 'config.json'
 
 # Open the config json file and establish the values as a dictionary
 with open(config_path) as json_config:
