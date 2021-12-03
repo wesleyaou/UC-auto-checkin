@@ -6,6 +6,9 @@ import os, json, subprocess
 from getpass import getpass
 from pip._internal import main as pipmain
 
+if os.geteuid() != 0:
+    print("\033[31;1;1mFailed!\033[0m Script needs to be run as root/sudo!")
+    exit()
 
 CELL_PROVIDERS = {1 : "vtext.com",              # Verizon
                 2 : "txt.att.net",              # AT&T
@@ -25,7 +28,7 @@ CELL_NAME = ["Verizon",
 login_url = "https://www.utica.edu/forms/covid-19-screening/index.cfm"
 checkin_url = "https://www.utica.edu/apps/covid-19-screening/covid19screening.cfc?method=insert&pidm=452205&status=S&campus=Y&symptoms=N&_=1631702345870"
 
-main_file_name = "Auto_Checkin.py"
+main_file_name = "Auto_Checkin"
 path_to_crontab = "/etc/crontab"
 
 # Vars to be modified later
@@ -65,19 +68,19 @@ with open(path_to_crontab, "r") as cron:
             mins, hours = line.split(" ")[0], line.split(" ")[1][:2].strip()
             print("\nLogin will be executed daily at \033[32;1;4m" + hours + ":" + mins + "\033[0m. To change this, edit /etc/crontab")
 
-pre_main = open(main_file_name, 'r')
-pre_config_lines = pre_main.readlines()
-pre_main.close()
-iter = 0
-for line in pre_config_lines:
-    if line.startswith("config_path = ''"):
-        del pre_config_lines[iter]
-        del pre_config_lines[iter - 1]
-        pre_config_lines.insert(iter - 1, "# Config path HAS BEEN populated by the setup script\n")
-        pre_config_lines.insert(iter, "config_path = '" + prog_path + "config.json'\n")
-    iter += 1
-with open(main_file_name, "w") as post_main:
-    post_main.writelines(pre_config_lines)
+# pre_main = open(main_file_name, 'r')
+# pre_config_lines = pre_main.readlines()
+# pre_main.close()
+# iter = 0
+# for line in pre_config_lines:
+#     if line.startswith("config_path = ''"):
+#         del pre_config_lines[iter]
+#         del pre_config_lines[iter - 1]
+#         pre_config_lines.insert(iter - 1, "# Config path HAS BEEN populated by the setup script\n")
+#         pre_config_lines.insert(iter, "config_path = '" + prog_path + "config.json'\n")
+#     iter += 1
+# with open(main_file_name, "w") as post_main:
+#     post_main.writelines(pre_config_lines)
 
 if not os.path.isdir(prog_path + "Responses/"):
     os.mkdir(prog_path + "Responses/")
@@ -164,11 +167,18 @@ config_json = json.dumps({"prog_path" : prog_path,
                         "conf_num" : notif_num}, indent=1)
 
 
-make_executable_cmd = "chmod +x " + main_file_name
-subprocess.run(make_executable_cmd, shell=True, check=True)
+bash_caller_contents = ["#!/usr/bin/env bash\n",
+                    "\n",
+                    "python3 /home/lame/projects/UC_Auto_Checkin/Final/UC-auto-checkin/Auto_Checkin.py"]
 
-# TODO write script to execute python script and put it in /etc/cron.daily, don't move the whole script
-os.rename(main_file_name, "/etc/cron.daily/" + main_file_name[:-3])
+
+os.rename(main_file_name + ".py", prog_path + main_file_name + ".py")
+
+with open("/etc/cron.daily/" + main_file_name, "w") as bash_caller:
+    bash_caller.writelines(bash_caller_contents)
+
+make_executable_cmd = "chmod +x " + "/etc/cron.daily/" + main_file_name
+subprocess.run(make_executable_cmd, shell=True, check=True)
 
 config_file = open(prog_path + "config.json", "w")
 config_file.write(config_json)
