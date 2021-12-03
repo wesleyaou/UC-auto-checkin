@@ -18,14 +18,14 @@ today = date.today()
 today_date = today.strftime("%m_%d_%Y")
 
 # Config path HAS BEEN populated by the setup script
-config_path = '/home/lame/projects/UC_Auto_Checkin/Final/config.json'
+config_path = '/home/lame/projects/UC_Auto_Checkin/Final/UC-auto-checkin/config.json'
 
 # Open the config json file and establish the values as a dictionary
 with open(config_path) as json_config:
     config = json.load(json_config)
 
 # Start logging based on the path specified in the config.json
-log_path = config['prog_path'] + "logging/" + today_date
+log_path = config['prog_path'] + "Logging/" + today_date + ".log"
 logging.basicConfig(filename=log_path, level=logging.DEBUG)
 
 verify_url = config["login_url"] + "?"
