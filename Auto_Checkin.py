@@ -121,10 +121,11 @@ def makeRequests():
     with requests.session() as sesh:
         login_req = sesh.post(config["login_url"], headers=headers, data=payload)
         soup = BeautifulSoup(login_req.content, "html.parser")
+        print(soup.prettify)
         login_status = soup.find(class_="alert alert-danger")
         if login_status != None:
             if login_status.text.replace('\n', '').strip() == "Invalid Login!":
-                print("Login invalid!")
+                outputMessages(today_date.replace("_", "/") + ": " + "UC COVID Check-in Attempt: Failed to login, bad credentials?", "ERROR")
                 exit()
         else:
             checkin_req = sesh.post(config["checkin_url"], headers=headers)
