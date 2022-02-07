@@ -38,3 +38,11 @@ The installation is mostly handled by the setup script, but for the time being
 ## (Optional) Text Confirmation Notifications
 
 This is pretty straight forward and a nice feature to have. Just make a new gmail account, and go to the following link (<https://myaccount.google.com/lesssecureapps>) to enable less secure apps, and enter the email login info upon the setup.py's prompt. You'll be prompted for your phone number along with your carrier. This will allow the script the send you SMS messages through your carrier's email format. 
+
+## (Optional) IFTTT Integration
+
+To integrate this script into IFTTT and allow it to trigger other automation services, you will need to setup the Webhooks service and get your key.
+Go to (<https://ifttt.com>) and sign in.
+Create an applet, using Webhooks as the trigger (Select the "Receive a web request" option)
+After you create your applet, click your profile icon in the top-right corner, go to "My Services" and select "Webhooks". 
+Click "Documentation". Your key will be at the top of the page.
