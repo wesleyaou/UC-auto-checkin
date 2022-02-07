@@ -44,5 +44,6 @@ This is pretty straight forward and a nice feature to have. Just make a new gmai
 To integrate this script into IFTTT and allow it to trigger other automation services, you will need to setup the Webhooks service and get your key.
 Go to (<https://ifttt.com>) and sign in.
 Create an applet, using Webhooks as the trigger (Select the "Receive a web request" option)
+When asked for the Event Name, enter "UC-auto-checkin"
 After you create your applet, click your profile icon in the top-right corner, go to "My Services" and select "Webhooks". 
 Click "Documentation". Your key will be at the top of the page.
