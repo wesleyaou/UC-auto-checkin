@@ -18,11 +18,11 @@ CELL_PROVIDERS = {1 : "vtext.com",              # Verizon
                 5 : "tmomail.net",              # T-Mobile
                 6 : "mailmymobile.net"}         # Consumer Cellular
 
-CELL_NAME = ["Verizon", 
-            "AT&T", 
-            "Cricket Wireless", 
-            "MetroPCS", 
-            "T-Mobile", 
+CELL_NAME = ["Verizon",
+            "AT&T",
+            "Cricket Wireless",
+            "MetroPCS",
+            "T-Mobile",
             "Consumer Cellular"]
 
 
@@ -112,7 +112,7 @@ while UC_pass == "":
     UC_pass_prompt = getpass("\nEnter password to be used for UC login authentication: ")
     if UC_pass_prompt.replace(" ", "") == "":
         print("\033[31;1;1mFailed!\033[0m Password Required.")
-    
+
     UC_pass_conf = getpass("Confirm password: ")
     if UC_pass_prompt != UC_pass_conf:
         print("\033[31;1;1mFailed!\033[0m Password mismatch!")
@@ -124,18 +124,6 @@ while notif == "":
     notif_prompt = input("\nWould you like SMS notifications for successful logins? [Y/n]: ")
     if notif_prompt.replace(" ", "") == "" or notif_prompt.lower() == 'y':
         notif = True
-        while notif_ifttt== "":
-            notif_ifttt_prompt = input("\nWould you like to have the notifications sent over an IFTTT webhook? (See README)(y/N)")
-            if notif_ifttt_prompt.lower() == 'y':
-                notif_ifttt = True
-                while notif_ifttt_key== "":
-                    notif_ifttt_key = input("Enter your IFTT Webhooks key (See README): ")
-            elif notif_ifttt_prompt.replace(" ", "")== "" or notif_prompt.lower() == 'n':
-                notif_ifttt = False
-            else:
-                print("\033[31;1;1mFailed!\033[0m Invalid Input!")
-        if notif_ifttt == True:
-            break
         while notif_email== "":
             notif_email_prompt = input("\nEnter the email created that can be accessed by smtplib (see README): ")
             if not "@" in notif_email_prompt:
@@ -174,7 +162,18 @@ while notif == "":
     else:
         print("\033[31;1;1mFailed!\033[0m Invalid Input!")
 
-        
+while notif_ifttt== "":
+    notif_ifttt_prompt = input("\nWould you like to enable IFTTT Webhooks integration? (See README)[y/N]: ")
+    if notif_ifttt_prompt.lower() == 'y':
+        notif_ifttt = True
+        while notif_ifttt_key== "":
+            notif_ifttt_key = input("Enter your IFTT Webhooks key (See README): ")
+    elif notif_ifttt_prompt.replace(" ", "")== "" or notif_prompt.lower() == 'n':
+        notif_ifttt = False
+    else:
+        print("\033[31;1;1mFailed!\033[0m Invalid Input!")
+
+
 config_json = json.dumps({"prog_path" : prog_path,
                         "login_url" : login_url,
                         "checkin_url" : checkin_url,
@@ -206,4 +205,3 @@ config_file.write(config_json)
 config_file.close()
 
 print("\n\033[32;1;1mDone!\033[0m\n")
-
