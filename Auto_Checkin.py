@@ -71,13 +71,18 @@ def sendSms(msg):
     eaddr = config["email_addr"]
     epass = config["email_pass"]
     num = config["conf_num"]
-
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(eaddr, epass)
-
-    msg = "\n" + msg
-    server.sendmail(eaddr, num, msg)
+    doIFTTT = config["notify_IFTTT"]
+    iftttKey = config["ifttt_key"]
+    if doIFTTT:
+        iftttURL = "https://maker.ifttt.com/trigger/UC-auto-checkin/with/key/"+iftttKey
+        jsonMsg = {'value1' : msg}
+        requests.post(iftttURL, json=jsonMsg)
+    else:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(eaddr, epass)
+        msg = "\n" + msg
+        server.sendmail(eaddr, num, msg)
     outputMessages('SMS Sent! Contents: ' + msg, "DEBUG")
 
 # Scrapes the page to confirm the "notcoming_div" is hidden, while "no_symptoms" is showing

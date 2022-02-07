@@ -6,6 +6,7 @@ import os, json, subprocess
 from getpass import getpass
 from pip._internal import main as pipmain
 
+# Checks if sudo
 if os.geteuid() != 0:
     print("\033[31;1;1mFailed!\033[0m Script needs to be run as root/sudo!")
     exit()
@@ -17,11 +18,11 @@ CELL_PROVIDERS = {1 : "vtext.com",              # Verizon
                 5 : "tmomail.net",              # T-Mobile
                 6 : "mailmymobile.net"}         # Consumer Cellular
 
-CELL_NAME = ["Verizon", 
-            "AT&T", 
-            "Cricket Wireless", 
-            "MetroPCS", 
-            "T-Mobile", 
+CELL_NAME = ["Verizon",
+            "AT&T",
+            "Cricket Wireless",
+            "MetroPCS",
+            "T-Mobile",
             "Consumer Cellular"]
 
 
@@ -31,11 +32,15 @@ checkin_url = "https://www.utica.edu/apps/covid-19-screening/covid19screening.cf
 main_file_name = "Auto_Checkin"
 path_to_crontab = "/etc/crontab"
 
+iftttInfo= "https://ifttt.com/maker_webhooks"
+
 # Vars to be modified later
 prog_path = ""
 UC_user = ""
 UC_pass = ""
 notif = ""
+notif_ifttt = ""
+notif_ifttt_key = ""
 notif_email = ""
 notif_pass = ""
 notif_addr = ""
@@ -49,6 +54,7 @@ print("Installing BeautifulSoup4...")
 # TODO update method of pip use? warns it'll be depreciated soon, but works for now.
 pipmain(['install', 'beautifulsoup4'])
 
+# Set prog_path (script file dir)
 while prog_path == "":
     prog_path_prompt = input("\nDesired path for script files to live in (default is current dir): ")
     if prog_path_prompt.replace(" ", "") == "":
@@ -106,7 +112,7 @@ while UC_pass == "":
     UC_pass_prompt = getpass("\nEnter password to be used for UC login authentication: ")
     if UC_pass_prompt.replace(" ", "") == "":
         print("\033[31;1;1mFailed!\033[0m Password Required.")
-    
+
     UC_pass_conf = getpass("Confirm password: ")
     if UC_pass_prompt != UC_pass_conf:
         print("\033[31;1;1mFailed!\033[0m Password mismatch!")
@@ -155,16 +161,30 @@ while notif == "":
         notif = False
     else:
         print("\033[31;1;1mFailed!\033[0m Invalid Input!")
-        
+
+while notif_ifttt== "":
+    notif_ifttt_prompt = input("\nWould you like to enable IFTTT Webhooks integration? (See README)[y/N]: ")
+    if notif_ifttt_prompt.lower() == 'y':
+        notif_ifttt = True
+        while notif_ifttt_key== "":
+            notif_ifttt_key = input("Enter your IFTT Webhooks key (See README): ")
+    elif notif_ifttt_prompt.replace(" ", "")== "" or notif_prompt.lower() == 'n':
+        notif_ifttt = False
+    else:
+        print("\033[31;1;1mFailed!\033[0m Invalid Input!")
+
+
 config_json = json.dumps({"prog_path" : prog_path,
                         "login_url" : login_url,
                         "checkin_url" : checkin_url,
                         "notify" : notif,
+                        "notify_IFTTT" : notif_ifttt,
                         "UC_user" : UC_user,
                         "UC_pass" : UC_pass,
                         "email_addr" : notif_email,
                         "email_pass" : notif_pass,
-                        "conf_num" : notif_num}, indent=1)
+                        "conf_num" : notif_num,
+                        "ifttt_key" : notif_ifttt_key}, indent=1)
 
 
 bash_caller_contents = ["#!/usr/bin/env bash\n",
@@ -185,4 +205,3 @@ config_file.write(config_json)
 config_file.close()
 
 print("\n\033[32;1;1mDone!\033[0m\n")
-
